@@ -1,45 +1,85 @@
 from flask import Flask, jsonify, request
-import json
+from flask_cors import CORS
+from utils import carregar_produtos, salvar_produtos
+from flask import render_template
+
 
 app = Flask(__name__)
-ARQUIVO_PRODUTOS = 'produtos.json'
+CORS(app)  # Permite acesso por frontend externo
 
-def carregar_produtos():
-    with open(ARQUIVO_PRODUTOS, 'r') as f:
-        return json.load(f)
-
-def salvar_produtos(produtos):
-    with open(ARQUIVO_PRODUTOS, 'w') as f:
-        json.dump(produtos, f, indent=4)
+@app.route('/')
+def home():
+    return jsonify({"mensagem": "Bem-vindo à loja de futebol ⚽"}), 200
 
 @app.route('/produtos', methods=['GET'])
 def listar_produtos():
     produtos = carregar_produtos()
-    return jsonify(produtos)
+    return jsonify(produtos), 200
 
 @app.route('/produto/<int:id>', methods=['GET'])
 def obter_produto(id):
     produtos = carregar_produtos()
-    for produto in produtos:
-        if produto["id"] == id:
-            return jsonify(produto)
+    produto = next((p for p in produtos if p['id'] == id), None)
+    if produto:
+        return jsonify(produto), 200
     return jsonify({"erro": "Produto não encontrado"}), 404
 
 @app.route('/produto', methods=['POST'])
 def adicionar_produto():
-    novo_produto = request.json
+    dados = request.get_json()
+
+    if not dados or 'nome' not in dados or 'preco' not in dados:
+        return jsonify({"erro": "Nome e preço são obrigatórios"}), 400
+
+    try:
+        preco = float(dados['preco'])
+    except ValueError:
+        return jsonify({"erro": "Preço inválido"}), 400
+
     produtos = carregar_produtos()
-    novo_produto["id"] = max([p["id"] for p in produtos] + [0]) + 1
+    novo_id = max([p["id"] for p in produtos], default=0) + 1
+    novo_produto = {
+        "id": novo_id,
+        "nome": dados["nome"],
+        "preco": round(preco, 2)
+    }
     produtos.append(novo_produto)
     salvar_produtos(produtos)
     return jsonify(novo_produto), 201
 
+@app.route('/produto/<int:id>', methods=['PUT'])
+def atualizar_produto(id):
+    dados = request.get_json()
+    produtos = carregar_produtos()
+    produto = next((p for p in produtos if p['id'] == id), None)
+
+    if not produto:
+        return jsonify({"erro": "Produto não encontrado"}), 404
+
+    if "nome" in dados:
+        produto["nome"] = dados["nome"]
+    if "preco" in dados:
+        try:
+            produto["preco"] = float(dados["preco"])
+        except ValueError:
+            return jsonify({"erro": "Preço inválido"}), 400
+
+    salvar_produtos(produtos)
+    return jsonify(produto), 200
+
 @app.route('/produto/<int:id>', methods=['DELETE'])
 def remover_produto(id):
     produtos = carregar_produtos()
-    produtos = [p for p in produtos if p["id"] != id]
-    salvar_produtos(produtos)
-    return jsonify({"mensagem": "Produto removido com sucesso"})
+    produtos_filtrados = [p for p in produtos if p['id'] != id]
+
+    if len(produtos) == len(produtos_filtrados):
+        return jsonify({"erro": "Produto não encontrado"}), 404
+
+    salvar_produtos(produtos_filtrados)
+    return jsonify({"mensagem": "Produto removido com sucesso"}), 200
+@app.route('/loja')
+def loja():
+    return render_template('index.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
