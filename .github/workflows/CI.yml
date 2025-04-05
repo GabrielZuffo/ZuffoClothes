@@ -2,8 +2,7 @@ name: Continuous Integration
 on:
   pull_request:
     branches:
-      - test
-      - main
+      - Loja_Futebol
 
 jobs:
   build:
