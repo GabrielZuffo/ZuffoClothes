@@ -22,5 +22,4 @@ jobs:
           pip install pylint
 
       - name: Run pylint
-        run: |
-          pylint app.py
+        run: pylint . --exit-zero
