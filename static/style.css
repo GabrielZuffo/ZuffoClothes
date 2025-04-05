@@ -1,0 +1,88 @@
+/* Reset e base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+  }
+  
+  /* Container centralizado */
+  .container {
+    max-width: 900px;
+    margin: 100px auto;
+    padding: 40px;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  
+  /* Títulos */
+  h1 {
+    font-size: 32px;
+    color: #007BFF;
+    margin-bottom: 20px;
+  }
+  
+  p {
+    font-size: 18px;
+    margin-bottom: 30px;
+  }
+  
+  /* Botões */
+  .btn-ir, .btn-voltar {
+    display: inline-block;
+    background-color: #007BFF;
+    color: white;
+    padding: 12px 25px;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .btn-ir:hover, .btn-voltar:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Estilo para página de produtos futuramente */
+  .produto {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px 0;
+    text-align: left;
+  }
+  
+  .produto h3 {
+    margin-bottom: 10px;
+    color: #222;
+  }
+  
+  .produto p {
+    margin-bottom: 5px;
+  }
+  
+  /* Responsividade simples */
+  @media (max-width: 600px) {
+    .container {
+      margin: 50px 20px;
+      padding: 20px;
+    }
+  
+    h1 {
+      font-size: 26px;
+    }
+  
+    .btn-ir, .btn-voltar {
+      font-size: 16px;
+      padding: 10px 20px;
+    }
+  }
+  
