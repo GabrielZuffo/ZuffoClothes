@@ -1,0 +1,7 @@
+[
+    { "id": 1, "nome": "Camisa Real Madrid", "preco": 249.90 },
+    { "id": 2, "nome": "Camisa Flamengo", "preco": 199.90 },
+    { "id": 3, "nome": "Camisa PSG", "preco": 229.90 },
+    { "id": 4, "nome": "Camisa Corinthians", "preco": 189.90 }
+  ]
+  
