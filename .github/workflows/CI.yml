@@ -23,8 +23,7 @@ jobs:
 
       - name: Run pylint
         run: pylint . --exit-zero
-        
-        jobs:
+
   discord:
     runs-on: ubuntu-latest
     steps:
