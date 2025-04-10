@@ -35,3 +35,6 @@ jobs:
           webhook: ${{ secrets.DISCORD_CLOTHES }}
           template: "avatar-with-link"
           include-extras: true
+
+
+  ################################################################ Gabriel Zuffo #############################################
