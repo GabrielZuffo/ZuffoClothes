@@ -1,15 +1,21 @@
+import pytest
 # Página inicial
 from src.app import *
-def test_home():
+
+@pytest.fixture
+def app_context():
+    with app.app_context():
+        yield
+def test_home(app_context):
     assert home() ==  render_template('home.html')
 
 # Página da loja
 
-def test_loja():
+def test_loja(app_context):
      assert loja() == render_template('index.html')
 
 # ✅ Nova feature: Lista de camisas em JSON
-def test_listar_camisas():
+def test_listar_camisas(app_context):
     test_camisas = [
         {
             "id": 1,
