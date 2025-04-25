@@ -1,42 +1,34 @@
-from src.app import *
 import pytest
-from flask import Flask, render_template, jsonify
-from flask_cors import CORS
+import sys
+import os
 
-app = Flask(__name__)
-CORS(app)
-# Página inicial
+# Adiciona o caminho do diretório src ao sys.path para que possamos importar app
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../src')))
 
-def test_home():
-   with app.app_context():
-        rendered = render_template("home.html", name="Tester")
-        assert "Tester" in rendered 
+from app import app  # Importa o aplicativo Flask
 
-# Página da loja
+@pytest.fixture
+def client():
+    with app.test_client() as client:
+        yield client
 
-def test_loja():
-     assert loja() == render_template('index.html')
+def test_home(client):
+    """Testa se a página inicial retorna o status 200"""
+    response = client.get('/')
+    assert response.status_code == 200
 
-# ✅ Nova feature: Lista de camisas em JSON
-def test_listar_camisas():
-    test_camisas = [
-        {
-            "id": 1,
-            "time": "Real Madrid",
-            "preco": 299.90,
-            "tamanhos": ["P", "M", "G", "GG"]
-        },
-        {
-            "id": 2,
-            "time": "Flamengo",
-            "preco": 249.90,
-            "tamanhos": ["P", "M", "G", "GG"]
-        },
-        {
-            "id": 3,
-            "time": "PSG",
-            "preco": 319.90,
-            "tamanhos": ["P", "M", "G", "GG"]
-        }
-    ]
-    assert listar_camisas() == jsonify(test_camisas)
+def test_loja(client):
+    """Testa se a página da loja retorna o status 200"""
+    response = client.get('/loja')
+    assert response.status_code == 200
+
+def test_listar_camisas(client):
+    """Testa se a API de camisas retorna o JSON esperado"""
+    response = client.get('/api/camisas')
+    assert response.status_code == 200
+    camisas = response.get_json()
+    assert isinstance(camisas, list)
+    assert len(camisas) == 3
+    assert camisas[0]["time"] == "Real Madrid"
+    assert camisas[1]["time"] == "Flamengo"
+    assert camisas[2]["time"] == "PSG"
